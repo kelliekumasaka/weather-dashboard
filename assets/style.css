@@ -5,3 +5,7 @@ header{
     padding: 10px;
 }
 
+.card-body{
+    background-color: #19425D;
+    color: white;
+}
