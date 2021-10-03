@@ -9,3 +9,11 @@ header{
     background-color: #19425D;
     color: white;
 }
+
+#icon{
+    width: 60px;
+}
+
+.cardIcon{
+    width: 50px;
+}
