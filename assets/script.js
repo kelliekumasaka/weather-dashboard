@@ -1,26 +1,27 @@
 // defining all global variables
 var today = moment().format('L'); 
 var searchBtn = document.querySelector("#searchBtn");
+var pastSearches = document.querySelector("#pastSearches");
 var city = document.querySelector("#city");
 var userCity = document.querySelector("#userCity");
-var userIcon = document.querySelector("#icon")
-var userTemp = document.querySelector("#temp")
-var userWind = document.querySelector("#wind")
-var userHumidity = document.querySelector("#humidity")
-var userUv = document.querySelector("#uv")
+var userIcon = document.querySelector("#icon");
+var userTemp = document.querySelector("#temp");
+var userWind = document.querySelector("#wind");
+var userHumidity = document.querySelector("#humidity");
+var userUv = document.querySelector("#uv");
 var cityName;
-var h5El = document.getElementsByTagName("h5")
-var iconEl = document.querySelectorAll(".cardIcon")
-var humidityEl = document.querySelectorAll(".cardHumidity")
-var tempEl = document.querySelectorAll(".cardTemp")
-var windEl = document.querySelectorAll(".cardWind")
+var h5El = document.getElementsByTagName("h5");
+var iconEl = document.querySelectorAll(".cardIcon");
+var humidityEl = document.querySelectorAll(".cardHumidity");
+var tempEl = document.querySelectorAll(".cardTemp");
+var windEl = document.querySelectorAll(".cardWind");
+var pastCity = [];
 
 userCity.textContent = userCity.innerHTML + " " + today;
 
 searchBtn.addEventListener("click", function(event){
     event.preventDefault();
     cityName=city.value.trim();
-    
     getCoordinates();
 })
 
@@ -29,19 +30,26 @@ function getCoordinates(){
 
     fetch(requestUrl)
         .then(function (response) {
-            if(response===404||response===400){
-                alert("Please enter valid city")
-            }
             return response.json();
         })
         .then(function (data) {
-            var lat = data.coord.lat
-            var lon = data.coord.lon
-            var officialCity = data.name
+            var lat = data.coord.lat;
+            var lon = data.coord.lon;
+            var officialCity = data.name;
             var nowIcon = 'http://openweathermap.org/img/wn/' + data.weather[0].icon + '@2x.png';
             userIcon.setAttribute("src", nowIcon);
             var cityTitle = officialCity + " " + today;
-            var secondRequest = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + lon +'&units=imperial&APPID=cae8444643fe0b52a066739e6b318cbd'
+            var secondRequest = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + lon +'&units=imperial&APPID=cae8444643fe0b52a066739e6b318cbd';
+            var pastSearchBtn = document.createElement("button");
+            pastSearchBtn.textContent = officialCity;
+            pastSearches.append(pastSearchBtn);
+            pastSearchBtn.classList.add("btn-secondary", "btn-lg", "btn-block");
+            pastCity.push(pastSearchBtn.textContent.valueOf());
+            localStorage.setItem("pastCity",pastCity);
+            // pastSearchBtn.addEventListener("click", function(event){
+            //     event.preventDefault();
+            //     var pastCity = pastSearchBtn.textContent.valueOf();
+            // })
 
             fetch(secondRequest)
                 .then(function (response) {
@@ -61,11 +69,20 @@ function getCoordinates(){
                         iconEl[i].setAttribute("src", iconCard);
                         var humidCard = data.daily[i+1].humidity;
                         humidityEl[i].textContent = "Humidity: " + humidCard + "%";
-                        var tempCard = data.daily[i+1].temp.max
-                        tempEl[i].textContent = "Temp: " + tempCard + "ºF"
+                        var tempCard = data.daily[i+1].temp.max;
+                        tempEl[i].textContent = "Temp: " + tempCard + "ºF";
                         var windCard = data.daily[i+1].wind_speed;
-                        windEl[i].textContent = "Wind: " + windCard + " MPH"
+                        windEl[i].textContent = "Wind: " + windCard + " MPH";
                     }
                 });
         });
+}
+
+if(localStorage.getItem("pastCity")!==null){
+    console.log(pastCity)
+    var pastStoredCity = JSON.parse(localStorage.getItem("pastCity"))
+    var pastStoredCityBtn = document.createElement("button");
+    pastSearches.append(pastStoredCityBtn);
+    pastStoredCityBtn.textContent = pastStoredCity;
+    pastStoredCityBtn.classList.add("btn-secondary", "btn-lg", "btn-block");
 }
