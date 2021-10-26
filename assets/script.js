@@ -40,7 +40,6 @@ function getCoordinates(){
             userIcon.setAttribute("src", nowIcon);
             var cityTitle = officialCity + " " + today;
             var secondRequest = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + lon +'&units=imperial&APPID=cae8444643fe0b52a066739e6b318cbd';
-            
             if(!localStorage.getItem("pastCity")){
                 var pastSearchBtn = document.createElement("button");
                 pastSearchBtn.textContent = officialCity;
@@ -50,7 +49,6 @@ function getCoordinates(){
                 localStorage.setItem("pastCity",pastCity);
             }else{
                 var pastCitiesArray = localStorage.getItem("pastCity").split(",");
-                console.log(pastCitiesArray)
                 if(!pastCitiesArray.includes(officialCity)){
                     var pastSearchBtn = document.createElement("button");
                     pastSearchBtn.textContent = officialCity;
@@ -89,10 +87,8 @@ function getCoordinates(){
 }
 
 if(localStorage.getItem("pastCity")){
-    console.log(pastCity);
     var pastStoredCity = localStorage.getItem("pastCity");
     pastStoredCity = pastStoredCity.split(",");
-    console.log(pastStoredCity)
     for (i=0; i < pastStoredCity.length; i++){
         var pastStoredCityBtn = document.createElement("button");
         pastSearches.append(pastStoredCityBtn);
@@ -103,7 +99,6 @@ if(localStorage.getItem("pastCity")){
 
 pastSearches.addEventListener("click", function(event){
     event.preventDefault();
-    console.log(event)
     cityName=event.target.innerHTML;
     getCoordinates();
 })
